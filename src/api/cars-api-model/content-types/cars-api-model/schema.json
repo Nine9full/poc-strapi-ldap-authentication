@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "cars_api",
+  "info": {
+    "singularName": "cars-api-model",
+    "pluralName": "cars-api",
+    "displayName": "Cars"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "model": {
+      "type": "string"
+    },
+    "submodel": {
+      "type": "string"
+    },
+    "year": {
+      "type": "string"
+    },
+    "price": {
+      "type": "integer"
+    }
+  }
+}
