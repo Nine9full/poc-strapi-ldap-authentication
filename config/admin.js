@@ -2,7 +2,7 @@
 const { Strategy } = require('passport-local')
 const { toLower } = require('lodash/fp')
 const ldap = require('ldapjs');
-const addressConstant = 'cn=user,dc=domain,dc=lastDomain'
+const addressConstant = 'cn=commonName,dc=domainComponent,dc=lastDomainComponent'
 
 const ldapSearch = (baseDN, options, client) => {
   return new Promise((resolve, reject) => {
@@ -52,15 +52,15 @@ module.exports = ({ env }) => ({
               console.log('Error Connection:', err);
             })
 
-            let [user, domain, lastDomain] = toLower(email).split(/\@|\./)
+            let [commonName, domainComponent, lastDomainComponent] = toLower(email).split(/\@|\./)
             const isMatchedUnderScore = user.match('_')?.length > 0
             if (isMatchedUnderScore) {
               const userSplited = user.split('_')
               const fn = capitalizeFirstLetter(userSplited[0])
               const ln = capitalizeFirstLetter(userSplited[1])
-              user = `${fn} ${ln}`
+              commonName = `${fn} ${ln}`
             }
-            const address = addressConstant.replace('user', user).replace('domain', domain).replace('lastDomain', lastDomain)
+            const address = addressConstant.replace('commonName', commonName).replace('domainComponent', domainComponent).replace('domainComponent', lastDomainComponent)
             return client.bind(address, password, async (err) => {
               if (err) {
                 done(null, false, { message: err?.message })
@@ -70,7 +70,7 @@ module.exports = ({ env }) => ({
 
               const opts = {
                 scope: 'sub',
-                filter: '(&(objectClass=*)(CN=' + user + '))',
+                filter: '(&(objectClass=*)(CN=' + commonName + '))',
                 attrs: 'memberOf'
               };
 
@@ -80,6 +80,7 @@ module.exports = ({ env }) => ({
                 console.log(' >>>>>>>>>>>>>>>>>>>>> err ldap', err);
               })
 
+              //temp
               done(null, {
                 id: 1,
                 role:'Admin',
@@ -106,12 +107,10 @@ module.exports = ({ env }) => ({
     events: {
       onConnectionSuccess(e) {
         console.log('>>>>>>>>>>> ======= onConnectionSuccess', e);
-        // throw new UnauthorizedException()
       },
       onConnectionError(e) {
         console.log('>>>>>>>>>>> onConnectionError', e);
       },
-      // ...
       onSSOAutoRegistration(e) {
         const { user, provider } = e;
 
