@@ -53,7 +53,7 @@ module.exports = ({ env }) => ({
             })
 
             let [commonName, domainComponent, lastDomainComponent] = toLower(email).split(/\@|\./)
-            const isMatchedUnderScore = user.match('_')?.length > 0
+            const isMatchedUnderScore = commonName.match('_')?.length > 0
             if (isMatchedUnderScore) {
               const userSplited = user.split('_')
               const fn = capitalizeFirstLetter(userSplited[0])
@@ -83,9 +83,10 @@ module.exports = ({ env }) => ({
               //temp
               done(null, {
                 id: 1,
-                role:'Admin',
+                role: 'Admin',
                 firstname: 'Apisit',
                 lastname: 'Amklang'
+
               })
             })
 
